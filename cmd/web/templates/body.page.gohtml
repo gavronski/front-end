@@ -1,0 +1,90 @@
+{{template "base" .}}
+
+{{define "content" }}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="mt-5">Notes App</h1>
+                <hr>
+                <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Show notes</a>
+                <a id="addNote" class="btn btn-outline-secondary circle" href="javascript:void(0);">+</a>
+
+                <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
+                    <span class="text-muted">
+                      <h1 id="init-info">Click 'Show notes' button to see notes.</h1>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+    let brokerBtn = document.getElementById("brokerBtn");
+    let addNoteBtn = document.getElementById("addNote");
+
+    // hide addCategory button at start 
+    addNoteBtn.style.display = "none"
+
+    brokerBtn.addEventListener("click", function() {
+        document.getElementById("addNote").style.display = "inline-block"
+        const payload = {
+            action: "get-notes-list",
+        }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+
+        const body = {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: headers,
+        }
+
+        fetch("http:\/\/localhost:8080/handle", body)
+        .then((response) => response.json())
+        .then((data) => {
+
+            notes = data.data
+            length = notes.length
+
+            if (length > 0) {
+              output.innerHTML =  `<div class="album py-5 bg-light"> \
+                <div class="container mt-0"> \
+                  <div id="notes-container" class="row row-cols-1 row-cols-sm-1 s-md-1 row-cols-lg-3 g-3">`
+                  
+              //  add to notes container element
+              container = document.getElementById("notes-container")
+              notes.forEach((note, i) => {
+                  container.innerHTML += `<div class="col"> \
+                    <div class="card card mb-3"> \
+                      <div class="card-body" style="background-color:` + note.BackgroundColor + `;"> \
+                        <div class="d-flex justify-content-center mb-3"> \
+                          <p class="card-text" style="color:` + note.TextColor + `;"> \
+                          <b>` + note.Name + `</b></p> \
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center"> \
+                          <div class="btn-group"> \
+                            <a href="/notes" class="btn btn-light">Show</a> \
+                          </div> \
+                        </div> \
+                      </div> \
+                    </div> \
+                      </div>`
+              })
+
+              output.innerHTML +=  `</div> \
+                      </div> \
+                    </div>`
+            } else {
+              output.innerHTML = "<h1 id='init-info'>Youd don't have any notes.</h1>"
+            }
+        })
+        .catch((error) => {
+            output.innerHTML += "<br><br>Eror: " + error;
+        })        
+    })
+    </script>
+{{end}}
