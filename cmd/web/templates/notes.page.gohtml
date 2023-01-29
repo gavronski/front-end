@@ -6,7 +6,7 @@
         <div class="form-outline">
             <div class="row">
                 <div class="col">
-                    <h1 class="mt-5"> <input id="name" name="name" value={{.Name}} /></h1>
+                    <h1 class="mt-5"> <input id="name" name="name" value="" /></h1>
                     <hr>
                     <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a>
                     <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth</a>
@@ -15,12 +15,12 @@
 
                     <br>
                         <label for="fontColor" class="form-label">Font color</label>
-                        <input type="color" class="form-control form-control-color" id="fontColor" value="{{.TextColor}}" title="Font color:">
+                        <input type="color" class="form-control form-control-color" id="fontColor" value="" title="Font color:">
 
                         <label for="backgroundColor" class="form-label">Background color</label>
                         <input type="color" class="form-control form-control-color" id="backgroundColor" value="{{.BackgroundColor}}" title="Font color:">
                     <br>
-                    <textarea class="form-control" id="description" name="description" rows="10" style="border:none;margin:0;font-size:24px;padding: 2em;color:{{.TextColor}};background-color: {{.BackgroundColor}};">{{.Description}}</textarea>
+                    <textarea class="form-control" id="description" name="description" rows="10" style="border:none;margin:0;font-size:24px;padding: 2em;"></textarea>
                 </div>
             </div>
             <div class="row">
