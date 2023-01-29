@@ -5,15 +5,19 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 )
 
 var port string = "80"
 
 type Note struct {
-	Name            string
-	Description     string
-	TextColor       string
-	BackgroundColor string
+	ID              int       `json:"note_id"`
+	Name            string    `json:"name"`
+	Description     string    `json:"description"`
+	TextColor       string    `json:"text_color"`
+	BackgroundColor string    `json:"background_color"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
 }
 
 func main() {
@@ -60,16 +64,16 @@ func main() {
 		render(w, "body.page.gohtml", notes)
 	})
 
-	http.HandleFunc("/notes", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
 
-		var note Note = Note{
-			Name:            "test",
-			Description:     "test descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest description",
-			TextColor:       "#FDF6F2",
-			BackgroundColor: "#EE8044",
-		}
+		// var note Note = Note{
+		// 	Name:            "test",
+		// 	Description:     "test descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest descriptiontest description",
+		// 	TextColor:       "#FDF6F2",
+		// 	BackgroundColor: "#EE8044",
+		// }
 
-		render(w, "notes.page.gohtml", note)
+		render(w, "notes.page.gohtml")
 	})
 
 	srv := &http.Server{
@@ -87,7 +91,6 @@ func render(w http.ResponseWriter, layout string, td any) {
 	partials := []string{
 		"./cmd/web/templates/base.layout.gohtml",
 		"./cmd/web/templates/header.partial.gohtml",
-		"./cmd/web/templates/footer.partial.gohtml",
 	}
 
 	var templateSlice []string

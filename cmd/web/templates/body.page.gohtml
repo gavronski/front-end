@@ -60,14 +60,14 @@
               notes.forEach((note, i) => {
                   container.innerHTML += `<div class="col"> \
                     <div class="card card mb-3"> \
-                      <div class="card-body" style="background-color:` + note.BackgroundColor + `;"> \
+                      <div class="card-body" style="background-color:` + note.background_color + `;"> \
                         <div class="d-flex justify-content-center mb-3"> \
-                          <p class="card-text" style="color:` + note.TextColor + `;"> \
-                          <b>` + note.Name + `</b></p> \
+                          <p class="card-text" style="color:` + note.text_color + `;"> \
+                          <b>` + note.name + `</b></p> \
                         </div>
                         <div class="d-flex justify-content-center align-items-center"> \
                           <div class="btn-group"> \
-                            <a href="/notes" class="btn btn-light">Show</a> \
+                            <button id="note-` + note.note_id + `" class="btn btn-light get-note-by-id">Show</button> \
                           </div> \
                         </div> \
                       </div> \
@@ -78,6 +78,39 @@
               output.innerHTML +=  `</div> \
                       </div> \
                     </div>`
+
+              showNoteBtns = document.getElementsByClassName("get-note-by-id")
+
+              for (var i = 0; i < showNoteBtns.length; i++) {
+                  showNoteBtns[i].addEventListener("click", function(){
+                    
+                    id = this.id.replace("note-", "")
+
+                    const payload = {
+                        action: "get-note-by-id",
+                        note_id: id,
+                    }
+
+                    const headers = new Headers();
+                    headers.append("Content-Type", "application/json");
+
+                    const body = {
+                        method: "POST",
+                        body: JSON.stringify(payload),
+                        headers: headers,
+                    }
+
+                    fetch("http:\/\/localhost:8080/handle", body)
+                    .then((response) => response.json())
+                    .then((data) => {
+                      renderNoteView(data)
+                    })
+                    .catch((error) => {
+                        output.innerHTML += "<br><br>Eror: " + error;
+                    }) 
+                  });
+              }
+
             } else {
               output.innerHTML = "<h1 id='init-info'>Youd don't have any notes.</h1>"
             }
@@ -86,5 +119,36 @@
             output.innerHTML += "<br><br>Eror: " + error;
         })        
     })
+
+    function renderNoteView(data) {
+      note = data.data
+      document.body.innerHTML = `<div class="container"> \
+        <div class="form-outline"> \
+            <div class="row"> \
+                <div class="col"> \
+                    <a id="back" class="btn btn-outline-primary" href="/">Back to notes</a> \
+                    <h1 class="mt-3"> <input id="name" name="name" value="` + note.name + `" /></h1> \
+                    <hr> \
+                    <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a> \
+                    <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth</a> \
+                    <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Log</a> \
+                    <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Mail</a> \
+ 
+                    <br> \
+                        <label for="fontColor" class="form-label">Font color</label> \
+                        <input type="color" class="form-control form-control-color" id="fontColor" value="` + note.text_color + `" title="Font color:"> \
+ 
+                        <label for="backgroundColor" class="form-label">Background color</label> \
+                        <input type="color" class="form-control form-control-color" id="backgroundColor" value="` + note.background_color + `" title="Font color:"> \
+                    <br> \
+                    <textarea class="form-control" id="description" name="description" rows="10" style="border:none;margin:0;font-size:24px;padding: 2em;color:` + note.text_color + `;background-color: ` + note.background_color + `;">` + note.description + `</textarea> \
+                </div> \
+            </div> \
+            <div class="row"> \
+                 \
+            </div> \
+        </div> \
+    </div>`
+    }
     </script>
 {{end}}
