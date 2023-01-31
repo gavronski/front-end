@@ -6,21 +6,19 @@
         <div class="form-outline">
             <div class="row">
                 <div class="col">
-                    <h1 class="mt-5"> <input id="name" name="name" value="" /></h1>
+                    <a id="add-note" class="btn btn-outline-success" href="javascript:void(0);">Save</a>
+                    <a id="back" class="btn btn-outline-primary" href="/">Back to notes</a>
+                    <h1 class="mt-3"> <input id="name" name="name" value="" placeholder="Type note's name..."/></h1>
                     <hr>
-                    <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a>
-                    <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth</a>
-                    <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Log</a>
-                    <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Mail</a>
 
                     <br>
-                        <label for="fontColor" class="form-label">Font color</label>
+                        <label for="fontColor" class="form-label"><b>Font color</b></label>
                         <input type="color" class="form-control form-control-color" id="fontColor" value="" title="Font color:">
 
-                        <label for="backgroundColor" class="form-label">Background color</label>
-                        <input type="color" class="form-control form-control-color" id="backgroundColor" value="{{.BackgroundColor}}" title="Font color:">
+                        <label for="backgroundColor" class="form-label"><b>Background color</b></label>
+                        <input type="color" class="form-control form-control-color" id="backgroundColor" value="#FFFFFF" title="Font color:">
                     <br>
-                    <textarea class="form-control" id="description" name="description" rows="10" style="border:none;margin:0;font-size:24px;padding: 2em;"></textarea>
+                    <textarea class="form-control" id="description" name="description" placeholder="Wrtie your note here..." rows="10" style="margin:0;font-size:24px;padding: 2em;"></textarea>
                 </div>
             </div>
             <div class="row">
@@ -32,9 +30,38 @@
 
 {{define "js"}}
     <script>
-    brokerBtn = document.getElementById("brokerBtn")
-    brokerBtn.addEventListener("click", function() {
-        console.log(document.getElementById("fontColor").value)}
-    )
+        saveBtn = document.getElementById("add-note")
+
+        saveBtn.addEventListener("click", function() {
+            name = document.getElementById("name").value
+            fontColor = document.getElementById("fontColor").value
+            backgroundColor = document.getElementById("backgroundColor").value
+            description = document.getElementById("description").value
+            
+            const data = {
+                name: name,
+                font_color: fontColor, 
+                background_color: backgroundColor,
+                description: description,
+            }
+            const payload = {
+                action: "add-note",
+                data: data,
+            }
+
+            const headers = new Headers();
+            headers.append("Content-Type", "application/json");
+
+            const body = {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: headers,
+            }
+
+            fetch("http:\/\/localhost:8080/handle", body)
+            .then((response) => response.json())
+            .then((data) => {
+            })
+        })
     </script>
 {{end}}

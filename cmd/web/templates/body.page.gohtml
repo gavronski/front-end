@@ -7,7 +7,7 @@
                 <h1 class="mt-5">Notes App</h1>
                 <hr>
                 <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Show notes</a>
-                <a id="addNote" class="btn btn-outline-secondary circle" href="javascript:void(0);">+</a>
+                <a id="addNote" class="btn btn-outline-secondary circle" href="/add">+</a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">
@@ -27,7 +27,7 @@
 
     // hide addCategory button at start 
     addNoteBtn.style.display = "none"
-
+    
     brokerBtn.addEventListener("click", function() {
         document.getElementById("addNote").style.display = "inline-block"
         const payload = {
@@ -125,14 +125,12 @@
       document.body.innerHTML = `<div class="container"> \
         <div class="form-outline"> \
             <div class="row"> \
-                <div class="col"> \
+                <div class="col mt-3"> \
+                    <a id="update-note" class="btn btn-outline-success" href="javascript:void(0);">Save</a> \
+                    <a id="delete-note" class="btn btn-outline-danger" href="javascript:void(0);">Delete</a> \
                     <a id="back" class="btn btn-outline-primary" href="/">Back to notes</a> \
                     <h1 class="mt-3"> <input id="name" name="name" value="` + note.name + `" /></h1> \
                     <hr> \
-                    <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a> \
-                    <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth</a> \
-                    <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Log</a> \
-                    <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Mail</a> \
  
                     <br> \
                         <label for="fontColor" class="form-label">Font color</label> \
