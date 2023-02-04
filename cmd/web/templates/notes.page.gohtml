@@ -6,14 +6,14 @@
         <div class="form-outline">
             <div class="row">
                 <div class="col">
-                    <a id="add-note" class="btn btn-outline-success" href="javascript:void(0);">Save</a>
+                    <button id="add-note" class="btn btn-outline-success">Save</button>
                     <a id="back" class="btn btn-outline-primary" href="/">Back to notes</a>
                     <h1 class="mt-3"> <input id="name" name="name" value="" placeholder="Type note's name..."/></h1>
                     <hr>
 
                     <br>
                         <label for="fontColor" class="form-label"><b>Font color</b></label>
-                        <input type="color" class="form-control form-control-color" id="fontColor" value="" title="Font color:">
+                        <input type="color" class="form-control form-control-color" id="fontColor" value="#000000" title="Font color:">
 
                         <label for="backgroundColor" class="form-label"><b>Background color</b></label>
                         <input type="color" class="form-control form-control-color" id="backgroundColor" value="#FFFFFF" title="Font color:">
@@ -31,16 +31,33 @@
 {{define "js"}}
     <script>
         saveBtn = document.getElementById("add-note")
+        fontColorField = document.getElementById("fontColor")
+        backgroundColorField = document.getElementById("backgroundColor")
+
+        fontColorField.addEventListener("change", function() {
+            document.getElementById("description").style = "color:" + this.value + ";background-color:" + backgroundColorField.value + ";"
+        })
+
+        backgroundColorField.addEventListener("change", function() {
+            
+            document.getElementById("description").style = "background-color:" + this.value + ";color:" + fontColorField.value + ";"
+        })
 
         saveBtn.addEventListener("click", function() {
             name = document.getElementById("name").value
             fontColor = document.getElementById("fontColor").value
             backgroundColor = document.getElementById("backgroundColor").value
             description = document.getElementById("description").value
-            
+
+            err = validateField("name", name) 
+            if (err) return;
+
+            err = validateField("description", description) 
+            if (err) return;
+
             const data = {
                 name: name,
-                font_color: fontColor, 
+                text_color: fontColor, 
                 background_color: backgroundColor,
                 description: description,
             }
@@ -61,7 +78,43 @@
             fetch("http:\/\/localhost:8080/handle", body)
             .then((response) => response.json())
             .then((data) => {
+                    if (!data.error) fireNotification("success", data.message)  
+                    this.setAttribute('disabled', true)
+                    setTimeout(function() {
+                        window.location.href = "/"
+                    }, 4100)         
             })
         })
+
+    function validateField(fieldname, value) {
+        var err = false
+
+        if (value == "") {
+            err = true
+            var title = "Field [" + fieldname + "] can't be blank."
+            fireNotification("warning", title)
+        }
+
+        return err
+    }
+
+    function fireNotification(icon, title) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+            Toast.fire({
+            icon: icon,
+            title: title
+        })
+    }
     </script>
 {{end}}
