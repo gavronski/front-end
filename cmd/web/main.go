@@ -11,7 +11,7 @@ import (
 var port string = "80"
 
 type Note struct {
-	ID              int       `json:"note_id"`
+	ID              int       `json:"note_id,string,omitempty"`
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
 	TextColor       string    `json:"text_color"`
