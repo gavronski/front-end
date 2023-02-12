@@ -6,7 +6,7 @@
             <div class="col">
                 <h1 class="mt-5">Notes App</h1>
                 <hr>
-                <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Show notes</a>
+                <a id="brokerBtn" class="btn btn-outline-secondary" >Show notes</a>
                 <a id="addNote" class="btn btn-outline-secondary circle" href="/add">+</a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
@@ -85,10 +85,13 @@
                   showNoteBtns[i].addEventListener("click", function(){
                     
                     id = this.id.replace("note-", "")
+                    const note = {
+                      note_id:id,
+                    }
 
                     const payload = {
                         action: "get-note-by-id",
-                        note_id: id,
+                        data: note,
                     }
 
                     const headers = new Headers();
@@ -126,8 +129,8 @@
         <div class="form-outline"> \
             <div class="row"> \
                 <div class="col mt-3"> \
-                    <a id="update-note" class="btn btn-outline-success" href="javascript:void(0);">Save</a> \
-                    <a id="delete-note" class="btn btn-outline-danger" href="javascript:void(0);">Delete</a> \
+                    <a id="update-note" class="btn btn-outline-success">Save</a> \
+                    <a id="delete-note" class="btn btn-outline-danger">Delete</a> \
                     <a id="back" class="btn btn-outline-primary" href="/">Back to notes</a> \
                     <h1 class="mt-3"> <input id="name" name="name" value="` + note.name + `" /></h1> \
                     <hr> \
@@ -150,7 +153,24 @@
     </div>`
 
       saveBtn = document.getElementById("update-note")
+      deleteBtn = document.getElementById("delete-note")
+
+      fontColorField = document.getElementById("fontColor")
+      backgroundColorField = document.getElementById("backgroundColor")
+
+      fontColorField.addEventListener("change", function() {
+          document.getElementById("description").style = "color:" + this.value + ";background-color:" + backgroundColorField.value + ";"
+      })
+
+      backgroundColorField.addEventListener("change", function() {
+          
+          document.getElementById("description").style = "background-color:" + this.value + ";color:" + fontColorField.value + ";"
+      })
+
+     
       saveBtn.addEventListener("click", function() {
+          this.style = "display:none;";
+          deleteBtn.style = "display:none;";
 
           id = document.getElementById("noteId").value
           name = document.getElementById("name").value 
@@ -186,7 +206,6 @@
             headers: headers,
           }
 
-          this.setAttribute('disabled', true)
           fetch("http:\/\/localhost:8080/handle", body)
           .then((response) => response.json())
           .then((data) => {
@@ -197,11 +216,9 @@
           })
         })
 
-        deleteBtn = document.getElementById("delete-note")
         deleteBtn.addEventListener("click", function() {
           id = document.getElementById("noteId").value
-          
-          confirmDeletion()
+          deleteNote(id)
         })
     }
 
@@ -237,7 +254,7 @@
         })
     }
 
-    function confirmDeletion() {
+    function deleteNote(id) {
       Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -248,8 +265,34 @@
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            //
-            fireNotification('success', 'Note has been deleted.')
+            deleteBtn.style = "display:none;";
+            saveBtn.style = "display:none;";
+
+            var note = {
+              note_id: id,
+            }
+
+            var payload = {
+              action: "delete-note",
+              data: note,
+            }
+
+            headers = new Headers(); 
+
+            const body = {
+              method: "POST",
+              body: JSON.stringify(payload),
+              headers: headers,
+            }
+
+            fetch("http:\/\/localhost:8080/handle", body)
+            .then((response) => response.json())
+            .then((data) => {
+                    if (!data.error) fireNotification("success", data.message)  
+                    setTimeout(function() {
+                        window.location.href = "/"
+                    }, 4100)         
+            })
           }
         })
     }
