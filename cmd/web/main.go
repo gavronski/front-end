@@ -21,19 +21,22 @@ type Note struct {
 }
 
 func main() {
-
+	// handle main view - list of notes
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		render(w, "body.page.gohtml")
 	})
 
+	// handle 'add' action
 	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
 		render(w, "notes.page.gohtml")
 	})
 
+	//create server
 	srv := &http.Server{
 		Addr: fmt.Sprintf(":%s", port),
 	}
 
+	// run server
 	err := srv.ListenAndServe()
 
 	if err != nil {
@@ -41,6 +44,7 @@ func main() {
 	}
 }
 
+// render builds templates
 func render(w http.ResponseWriter, layout string) {
 	partials := []string{
 		"./cmd/web/templates/base.layout.gohtml",
