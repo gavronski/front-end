@@ -35,12 +35,12 @@
         backgroundColorField = document.getElementById("backgroundColor")
 
         fontColorField.addEventListener("change", function() {
-            document.getElementById("description").style = "color:" + this.value + ";background-color:" + backgroundColorField.value + ";"
+            document.getElementById("description").style = "color:" + this.value + ";background-color:" + backgroundColorField.value + ";font-size:24px;"
         })
 
         backgroundColorField.addEventListener("change", function() {
             
-            document.getElementById("description").style = "background-color:" + this.value + ";color:" + fontColorField.value + ";"
+            document.getElementById("description").style = "background-color:" + this.value + ";color:" + fontColorField.value + ";font-size:24px;"
         })
 
         saveBtn.addEventListener("click", function() {
